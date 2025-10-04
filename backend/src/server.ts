@@ -15,13 +15,21 @@ async function bootstrap() {
     resolvers,
     plugins: [ApolloServerPluginLandingPageLocalDefault()],
     introspection: true,
+    csrfPrevention: false,
   });
 
   await server.start();
+
   app.use(
     '/graphql',
     cors({ origin: ['http://localhost:5173'], credentials: false }),
     express.json(),
+    (req, _res, next) => {
+      if (req.body == null) {
+        req.body = {};
+      }
+      next();
+    },
     expressMiddleware(server, {
       context: async () => ({}),
     }),
