@@ -23,17 +23,20 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@apollo/server": "^4.9.5",
-    "@aws-sdk/client-dynamodb": "^3.450.0",
-    "@aws-sdk/lib-dynamodb": "^3.450.0",
+    "@apollo/server": "^4.12.2",
+    "@aws-sdk/client-dynamodb": "^3.902.0",
+    "@aws-sdk/lib-dynamodb": "^3.902.0",
     "aws-sdk": "^2.1692.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "graphql": "^16.8.1",
+    "express": "^5.1.0",
+    "graphql": "^16.11.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/node": "^20.10.0",
-    "@types/uuid": "^9.0.7",
+    "@types/uuid": "^9.0.8",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.0"
