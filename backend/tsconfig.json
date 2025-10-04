@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    /* 言語とEnvironment */
+    "target": "ES2022",                    // 最新のNode.jsに対応
+    "module": "commonjs",                  // Node.jsのモジュールシステム
+    "lib": ["ES2022"],                     // 使用可能なライブラリ
+
+    /* モジュール解決 */
+    "moduleResolution": "node",            // Node.js式のモジュール解決
+    "esModuleInterop": true,               // CommonJSモジュールとの互換性
+    "allowSyntheticDefaultImports": true,  // デフォルトインポートを許可
+    "resolveJsonModule": true,             // JSONファイルのインポート許可
+
+    /* 出力 */
+    "outDir": "./dist",                    // コンパイル後の出力先
+    "rootDir": "./",                       // ソースコードのルート
+    "sourceMap": true,                     // デバッグ用のソースマップ
+
+    /* 型チェック */
+    "strict": true,                        // 厳密な型チェック
+    "noUnusedLocals": true,                // 未使用の変数を警告
+    "noUnusedParameters": true,            // 未使用のパラメータを警告
+    "noImplicitReturns": true,             // 暗黙的なreturnを禁止
+    "noFallthroughCasesInSwitch": true,   // switch文のフォールスルーを禁止
+    "noImplicitAny": true,                 // 暗黙的なany型を禁止
+
+    /* その他 */
+    "skipLibCheck": true,                  // 型定義ファイルのチェックをスキップ
+    "forceConsistentCasingInFileNames": true // ファイル名の大文字小文字を厳密に
+  },
+  "include": [
+    "src/**/*",                             // srcディレクトリ以下を対象
+    "scripts/**/*"                          // scriptsディレクトリも対象
+  ],
+  "exclude": [
+    "node_modules",                         // node_modulesは除外
+    "dist",                                 // 出力ディレクトリは除外
+    "**/*.test.ts"                          // テストファイルは除外
+  ]
+}
