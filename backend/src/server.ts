@@ -6,9 +6,14 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { typeDefs } from './schema/typeDefs';
 import { resolvers } from './resolvers';
+import { ensureTables } from './utils/ensureTables';
 
 async function bootstrap() {
   const app = express();
+
+  console.log('🔄 Ensuring DynamoDB tables exist...');
+  await ensureTables();
+  console.log('✅ DynamoDB tables ready.');
 
   const server = new ApolloServer({
     typeDefs,

@@ -3,7 +3,7 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 const isLocal = process.env.NODE_ENV !== 'production' || !!process.env.DYNAMODB_ENDPOINT;
 
-const client = new DynamoDBClient({
+export const dynamoClient = new DynamoDBClient({
   region: process.env.AWS_REGION || 'us-east-1',
   endpoint: isLocal ? (process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000') : undefined,
   credentials: isLocal
@@ -11,6 +11,6 @@ const client = new DynamoDBClient({
     : undefined,
 });
 
-export const ddb = DynamoDBDocumentClient.from(client, {
+export const ddb = DynamoDBDocumentClient.from(dynamoClient, {
   marshallOptions: { removeUndefinedValues: true },
 });
