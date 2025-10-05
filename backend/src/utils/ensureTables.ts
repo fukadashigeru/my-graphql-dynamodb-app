@@ -7,9 +7,11 @@ import {
 import { dynamoClient } from './dynamodb';
 
 const USERS_TABLE_NAME = process.env.USERS_TABLE_NAME ?? 'Users';
+const TASKS_TABLE_NAME = process.env.TASKS_TABLE_NAME ?? 'Tasks';
 
 export async function ensureTables(): Promise<void> {
   await ensureUsersTable();
+  await ensureTasksTable();
 }
 
 async function ensureUsersTable(): Promise<void> {
@@ -34,6 +36,32 @@ async function ensureUsersTable(): Promise<void> {
     await waitUntilTableExists(
       { client: dynamoClient, maxWaitTime: 20 },
       { TableName: USERS_TABLE_NAME },
+    );
+  }
+}
+
+async function ensureTasksTable(): Promise<void> {
+  try {
+    await dynamoClient.send(
+      new DescribeTableCommand({ TableName: TASKS_TABLE_NAME }),
+    );
+  } catch (error) {
+    if (!isResourceNotFoundError(error)) {
+      throw error;
+    }
+
+    await dynamoClient.send(
+      new CreateTableCommand({
+        TableName: TASKS_TABLE_NAME,
+        KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
+        AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'S' }],
+        BillingMode: 'PAY_PER_REQUEST',
+      }),
+    );
+
+    await waitUntilTableExists(
+      { client: dynamoClient, maxWaitTime: 20 },
+      { TableName: TASKS_TABLE_NAME },
     );
   }
 }

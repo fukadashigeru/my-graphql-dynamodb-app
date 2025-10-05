@@ -8,7 +8,7 @@ const dynamoDb = new AWS.DynamoDB({
   secretAccessKey: 'dummy'
 });
 
-async function createUserTable() {
+async function createTables() {
   try {
     console.log('DynamoDB Localに接続中...');
 
@@ -16,24 +16,8 @@ async function createUserTable() {
     const listResult = await dynamoDb.listTables().promise();
     console.log('✅ 接続成功！現在のテーブル:', listResult.TableNames);
 
-    console.log('Usersテーブルを作成中...');
-
-    const params = {
-      TableName: 'Users',
-      KeySchema: [
-        { AttributeName: 'id', KeyType: 'HASH' }
-      ],
-      AttributeDefinitions: [
-        { AttributeName: 'id', AttributeType: 'S' }
-      ],
-      BillingMode: 'PAY_PER_REQUEST'
-    };
-
-    console.log('テーブル作成パラメータ:', JSON.stringify(params, null, 2));
-
-    const result = await dynamoDb.createTable(params).promise();
-    console.log('✅ Usersテーブルが作成されました！');
-    console.log('作成結果:', result);
+    await ensureTable('Users');
+    await ensureTable('Tasks');
 
   } catch (error) {
     console.error('❌ エラーの詳細:');
@@ -42,9 +26,46 @@ async function createUserTable() {
     console.error('完全なエラー:', error);
 
     if (error instanceof Error && error.message.includes('ResourceInUseException')) {
-      console.log('⚠️ Usersテーブルは既に存在します');
+      console.log('⚠️ テーブルは既に存在する可能性があります');
     }
   }
 }
 
-createUserTable();
+async function ensureTable(tableName: string) {
+  if (!tableName) {
+    return;
+  }
+
+  const exists = await dynamoDb
+    .describeTable({ TableName: tableName })
+    .promise()
+    .then(() => true)
+    .catch((err) => {
+      if (err instanceof Error && err.name === 'ResourceNotFoundException') {
+        return false;
+      }
+      throw err;
+    });
+
+  if (exists) {
+    console.log(`ℹ️ ${tableName} テーブルは既に存在します`);
+    return;
+  }
+
+  console.log(`${tableName}テーブルを作成中...`);
+
+  const params = {
+    TableName: tableName,
+    KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
+    AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'S' }],
+    BillingMode: 'PAY_PER_REQUEST',
+  };
+
+  console.log('テーブル作成パラメータ:', JSON.stringify(params, null, 2));
+
+  const result = await dynamoDb.createTable(params).promise();
+  console.log(`✅ ${tableName}テーブルが作成されました！`);
+  console.log('作成結果:', result);
+}
+
+createTables();
